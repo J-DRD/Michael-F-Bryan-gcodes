@@ -211,5 +211,12 @@ namespace Gcodes.Test
             // manually counted the number of g/m codes in the baumer file :(
             Assert.Equal(64, numCodes);
         }
+
+        [Fact]
+        public void Parser_ShouldThrowUnexpectedTokenException()
+        {
+            var parser = new Parser(new Lexer("G@@@"));
+            Assert.Throws<UnexpectedTokenException>(() => parser.Parse().ToList());
+        }
     }
 }

@@ -5,6 +5,7 @@ using Serilog.Events;
 using Serilog.Exceptions;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Gcodes.Console
 {
@@ -12,13 +13,13 @@ namespace Gcodes.Console
     {
         private static OperationFactory operations = new OperationFactory();
 
-        static int Main(string[] args)
+        static async Task<int> Main(string[] args)
         {
             var parsedArgs = CommandLine.Parser.Default.ParseArguments<Options>(args);
 
             operations.IgnoreGcode(78);
 
-            return parsedArgs.MapResult(opts => Run(opts), _ => 1);
+            return await Task.FromResult(parsedArgs.MapResult(opts => Run(opts), _ => 1));
         }
 
         private static void Initializelogger(Options opts)

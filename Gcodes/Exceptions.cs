@@ -7,12 +7,29 @@ namespace Gcodes
     [Serializable]
     public class GcodeException : Exception
     {
+        public Location? Location { get; }
+        public string OffendingToken { get; }
+
+        public GcodeException(string message, Location? location = null, string offendingToken = null, Exception inner = null)
+            : base(message, inner)
+        {
+            Location = location;
+            OffendingToken = offendingToken;
+        }
+
         public GcodeException() { }
         public GcodeException(string message) : base(message) { }
         public GcodeException(string message, Exception inner) : base(message, inner) { }
         protected GcodeException(
           System.Runtime.Serialization.SerializationInfo info,
           System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+
+        public override string ToString()
+        {
+            if (Location != null)
+                return $"{Message} at line {Location.Value.Line}, col {Location.Value.Column} (token: {OffendingToken ?? "?"})";
+            return base.ToString();
+        }
     }
 
 

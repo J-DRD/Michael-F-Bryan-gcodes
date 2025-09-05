@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Gcodes
 {
-    public class SpanInfo : IEquatable<SpanInfo>
+    public struct SpanInfo : IEquatable<SpanInfo>
     {
         public SpanInfo(Span span, Location start, Location end, string value)
         {
@@ -21,13 +21,12 @@ namespace Gcodes
 
         public override bool Equals(object obj)
         {
-            return Equals(obj as SpanInfo);
+            return obj is SpanInfo other && Equals(other);
         }
 
         public bool Equals(SpanInfo other)
         {
-            return other != null &&
-                   EqualityComparer<Span>.Default.Equals(Span, other.Span) &&
+            return EqualityComparer<Span>.Default.Equals(Span, other.Span) &&
                    EqualityComparer<Location>.Default.Equals(Start, other.Start) &&
                    EqualityComparer<Location>.Default.Equals(End, other.End) &&
                    Value == other.Value;
@@ -45,7 +44,7 @@ namespace Gcodes
 
         public static bool operator ==(SpanInfo info1, SpanInfo info2)
         {
-            return EqualityComparer<SpanInfo>.Default.Equals(info1, info2);
+            return info1.Equals(info2);
         }
 
         public static bool operator !=(SpanInfo info1, SpanInfo info2)

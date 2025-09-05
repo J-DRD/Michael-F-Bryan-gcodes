@@ -56,9 +56,9 @@ namespace Gcodes
 
         private Location CalculateLocation(int byteIndex)
         {
-            var closestLocation = locations.Values.Where(loc => loc.ByteIndex < byteIndex).LastOrDefault();
+            var closestLocationNullable = locations.Values.Where(loc => loc.ByteIndex < byteIndex).Cast<Location?>().LastOrDefault();
 
-            var line = LineNumber(byteIndex, closestLocation);
+            var line = LineNumber(byteIndex, closestLocationNullable);
             var column = ColumnNumber(byteIndex);
 
             return new Location(byteIndex, line, column);
@@ -72,13 +72,13 @@ namespace Gcodes
             return col;
         }
 
-        internal int LineNumber(int byteIndex, Location closest = null)
+        internal int LineNumber(int byteIndex, Location? closest = null)
         {
             var line = NaiveLineNumber(src, byteIndex, closest?.ByteIndex ?? 0);
 
-            if (closest != null)
+            if (closest.HasValue)
             {
-                line += closest.Line - 1;
+                line += closest.Value.Line - 1;
             }
 
             return line;
