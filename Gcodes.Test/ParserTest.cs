@@ -215,7 +215,8 @@ namespace Gcodes.Test
         [Fact]
         public void Parser_ShouldThrowUnexpectedTokenException()
         {
-            var parser = new Parser(new Lexer("G@@@"));
+            // Use a token that's not G, M, T, or O to trigger UnexpectedTokenException
+            var parser = new Parser("X50");  // Start with X instead of a valid code letter
             Assert.Throws<UnexpectedTokenException>(() => parser.Parse().ToList());
         }
     }

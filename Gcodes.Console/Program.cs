@@ -13,7 +13,12 @@ namespace Gcodes.Console
     {
         private static OperationFactory operations = new OperationFactory();
 
-        static async Task<int> Main(string[] args)
+        static int Main(string[] args)
+        {
+            return MainAsync(args).GetAwaiter().GetResult();
+        }
+
+        static async Task<int> MainAsync(string[] args)
         {
             var parsedArgs = CommandLine.Parser.Default.ParseArguments<Options>(args);
 
