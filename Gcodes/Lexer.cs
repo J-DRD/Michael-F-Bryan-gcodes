@@ -30,7 +30,14 @@ namespace Gcodes
         /// source text.
         /// </summary>
         /// <param name="src"></param>
-        public Lexer(string src)
+        public Lexer(string src) : this(src, null) { }
+
+        /// <summary>
+        /// Create a new <see cref="Lexer"/> with custom token patterns.
+        /// </summary>
+        /// <param name="src">Source text to tokenize</param>
+        /// <param name="customPatterns">Custom patterns to use, or null for default patterns</param>
+        public Lexer(string src, IEnumerable<Pattern> customPatterns)
         {
             skips = new List<Regex>
             {
@@ -42,7 +49,12 @@ namespace Gcodes
             pointer = 0;
             lineNumber = 0;
 
-            patterns = new List<Pattern>
+            patterns = customPatterns?.ToList() ?? GetDefaultPatterns();
+        }
+
+        private static List<Pattern> GetDefaultPatterns()
+        {
+            return new List<Pattern>
             {
                 new Pattern(@"G", TokenKind.G),
                 new Pattern(@"O", TokenKind.O),
