@@ -54,7 +54,10 @@ namespace Gcodes
             var lexer = new Lexer(src);
             lexer.CommentDetected += OnCommentDetected;
 
-            var tokens = lexer.Tokenize().ToList();
+            // Estimate capacity for tokens based on input length
+            int estimatedTokenCapacity = Math.Max(10, src.Length / 4);
+            var tokens = new List<Token>(estimatedTokenCapacity);
+            tokens.AddRange(lexer.Tokenize());
             Run(tokens);
         }
 
@@ -66,7 +69,11 @@ namespace Gcodes
         {
             OnBeforeParse(tokens);
             var parser = new Parser(tokens);
-            var codes = parser.Parse().ToList();
+            
+            // Estimate capacity for codes - typically fewer codes than tokens
+            int estimatedCodeCapacity = Math.Max(5, tokens.Count / 3);
+            var codes = new List<Code>(estimatedCodeCapacity);
+            codes.AddRange(parser.Parse());
             Run(codes);
         }
 

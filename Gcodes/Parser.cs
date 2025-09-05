@@ -30,7 +30,17 @@ namespace Gcodes
         /// <see cref="Lexer"/> to tokenize the input.
         /// </summary>
         /// <param name="src"></param>
-        public Parser(string src) : this(new Lexer(src).Tokenize().ToList()) { }
+        public Parser(string src) : this(TokenizeWithCapacityEstimation(src)) { }
+
+        private static List<Token> TokenizeWithCapacityEstimation(string src)
+        {
+            // Estimate token capacity based on input length - rough heuristic of 1 token per 3-5 characters
+            int estimatedCapacity = Math.Max(10, src.Length / 4);
+            var tokens = new List<Token>(estimatedCapacity);
+            var lexer = new Lexer(src);
+            tokens.AddRange(lexer.Tokenize());
+            return tokens;
+        }
 
         /// <summary>
         /// Is this parser finished?
@@ -82,7 +92,7 @@ namespace Gcodes
                 return null;
             }
 
-            var numberTok = ParseInteger() ?? throw ParseError(TokenKind.Number); ;
+            var numberTok = ParseInteger() ?? throw ParseError(TokenKind.Number);
 
             var number = int.Parse(numberTok.Value);
             var span = numberTok.Span.Merge(m.Span);
@@ -181,7 +191,8 @@ namespace Gcodes
 
         private List<Argument> ParseArguments()
         {
-            var args = new List<Argument>();
+            // Pre-size for typical G-code commands which usually have 1-4 arguments
+            var args = new List<Argument>(4);
 
             while (!GetFinished())
             {
