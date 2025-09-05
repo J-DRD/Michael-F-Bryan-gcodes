@@ -30,37 +30,19 @@ namespace Gcodes
         /// source text.
         /// </summary>
         /// <param name="src"></param>
-        public Lexer(string src) : this(src, null, null) { }
-
-        /// <summary>
-        /// Create a new <see cref="Lexer"/> with custom token patterns.
-        /// </summary>
-        /// <param name="src">Source text to tokenize</param>
-        /// <param name="customPatterns">Custom patterns to use, or null for default patterns</param>
-        /// <param name="customSkips">Custom skip regexes to use, or null for default skips</param>
-        public Lexer(string src, IEnumerable<Pattern> customPatterns, IEnumerable<Regex> customSkips = null)
+        public Lexer(string src)
         {
-            skips = customSkips?.ToList() ?? GetDefaultSkips();
-            this.src = src;
-            pointer = 0;
-            lineNumber = 0;
-
-            patterns = customPatterns?.ToList() ?? GetDefaultPatterns();
-        }
-
-        private static List<Regex> GetDefaultSkips()
-        {
-            return new List<Regex>
+            skips = new List<Regex>
             {
                 new Regex(@"\G\s+", RegexOptions.Compiled),
                 new Regex(@"\G;([^\n\r]*)", RegexOptions.Compiled),
                 new Regex(@"\G\(([^)\n\r]*)\)", RegexOptions.Compiled),
             };
-        }
+            this.src = src;
+            pointer = 0;
+            lineNumber = 0;
 
-        private static List<Pattern> GetDefaultPatterns()
-        {
-            return new List<Pattern>
+            patterns = new List<Pattern>
             {
                 new Pattern(@"G", TokenKind.G),
                 new Pattern(@"O", TokenKind.O),
