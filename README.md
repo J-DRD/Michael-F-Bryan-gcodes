@@ -1,8 +1,19 @@
 # Gcodes
 
 [![Build status](https://ci.appveyor.com/api/projects/status/b4t1cp42205pdqta?svg=true)](https://ci.appveyor.com/project/Michael-F-Bryan/gcodes)
+[![GitHub Actions](https://github.com/J-DRD/Michael-F-Bryan-gcodes/workflows/Build%20and%20Package/badge.svg)](https://github.com/J-DRD/Michael-F-Bryan-gcodes/actions)
 
 A basic C# gcode parser and interpreter.
+
+## CI/CD
+
+This project uses GitHub Actions for continuous integration and deployment:
+
+- **Build Workflow**: Automatically builds the project and creates zip archives of build outputs on pushes to master and releases
+- **PR Validation**: Validates pull requests by building the project and running tests  
+- **Manual Test**: Available for manual testing and debugging of the build process
+
+All workflows run on Windows runners to support the .NET Framework 4.7.2 dependencies.
 
 ## Getting Started
 
