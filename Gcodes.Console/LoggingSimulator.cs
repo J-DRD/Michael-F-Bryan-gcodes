@@ -46,7 +46,7 @@ namespace Gcodes.Console
             }
             else
             {
-                logger.Debug("Comment: \"{Comment}\" at L{Line},C{Column}", e.Comment, info.Start.Line, info.Start.Column, info);
+                logger.Debug("Comment: \"{Comment}\" at L{Line},C{Column}", e.Comment, info?.Start.Line, info?.Start.Column, info);
             }
         }
     }
