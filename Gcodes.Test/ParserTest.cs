@@ -211,5 +211,13 @@ namespace Gcodes.Test
             // manually counted the number of g/m codes in the baumer file :(
             Assert.Equal(64, numCodes);
         }
+
+        [Fact]
+        public void Parser_ShouldThrowUnexpectedTokenException()
+        {
+            // Use a token that's not G, M, T, or O to trigger UnexpectedTokenException
+            var parser = new Parser("X50");  // Start with X instead of a valid code letter
+            Assert.Throws<UnexpectedTokenException>(() => parser.Parse().ToList());
+        }
     }
 }

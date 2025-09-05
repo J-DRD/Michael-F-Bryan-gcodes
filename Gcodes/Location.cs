@@ -3,9 +3,8 @@ using System.Collections.Generic;
 
 namespace Gcodes
 {
-    public class Location : IEquatable<Location>
+    public struct Location : IEquatable<Location>
     {
-
         public Location(int byteIndex, int line, int column)
         {
             ByteIndex = byteIndex;
@@ -19,13 +18,12 @@ namespace Gcodes
 
         public override bool Equals(object obj)
         {
-            return Equals(obj as Location);
+            return obj is Location other && Equals(other);
         }
 
         public bool Equals(Location other)
         {
-            return other != null &&
-                   ByteIndex == other.ByteIndex &&
+            return ByteIndex == other.ByteIndex &&
                    Line == other.Line &&
                    Column == other.Column;
         }
@@ -41,7 +39,7 @@ namespace Gcodes
 
         public static bool operator ==(Location location1, Location location2)
         {
-            return EqualityComparer<Location>.Default.Equals(location1, location2);
+            return location1.Equals(location2);
         }
 
         public static bool operator !=(Location location1, Location location2)

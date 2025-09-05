@@ -109,7 +109,7 @@ namespace Gcodes
         /// <returns>
         /// Span information, or <c>null</c> if not interpeting from source.
         /// </returns>
-        protected SpanInfo SpanInfoFor(Span span)
+        protected SpanInfo? SpanInfoFor(Span span)
         {
             return map?.SpanInfoFor(span);
         }
@@ -123,7 +123,7 @@ namespace Gcodes
         /// The corresponding <see cref="Location"/>, or <c>null</c> if not 
         /// interpreting from source.
         /// </returns>
-        protected Location LocationFor(int byteIndex)
+        protected Location? LocationFor(int byteIndex)
         {
             return map?.LocationFor(byteIndex);
         }
