@@ -1,3 +1,7 @@
+# Note: This project now uses GitHub Actions workflows for CI/CD
+# See .github/workflows/ directory for the active build and test workflows
+# This AppVeyor configuration is kept for reference but may be deprecated
+
 image: Visual Studio 2017
 
 cache:

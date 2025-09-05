@@ -1,10 +1,11 @@
+---
 name: Build and Package
 
-on:
+"on":
   push:
-    branches: [ master ]
+    branches: [master]
   release:
-    types: [ published ]
+    types: [published]
 
 jobs:
   build:
@@ -12,64 +13,68 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup .NET Framework
-      uses: microsoft/setup-msbuild@v1.3
+      - name: Setup .NET Framework
+        uses: microsoft/setup-msbuild@v1.3
 
-    - name: Setup NuGet
-      uses: nuget/setup-nuget@v1
-      with:
-        nuget-version: 'latest'
+      - name: Setup NuGet
+        uses: nuget/setup-nuget@v1
+        with:
+          nuget-version: 'latest'
 
-    - name: Restore NuGet packages
-      run: nuget restore Gcode.sln
+      - name: Restore NuGet packages
+        run: nuget restore Gcode.sln
 
-    - name: Build solution
-      run: msbuild Gcode.sln /p:Configuration=Release /p:Platform="Any CPU"
+      - name: Build solution
+        run: >
+          msbuild Gcode.sln /p:Configuration=Release /p:Platform="Any CPU"
 
-    - name: Create bin archive for Gcodes library
-      run: |
-        if (Test-Path "Gcodes\bin") {
-          Compress-Archive -Path "Gcodes\bin\*" -DestinationPath "gcodes-lib-bin.zip"
-        }
-      shell: pwsh
+      - name: Create bin archive for Gcodes library
+        run: |
+          if (Test-Path "Gcodes\bin") {
+            Compress-Archive -Path "Gcodes\bin\*" `
+              -DestinationPath "gcodes-lib-bin.zip"
+          }
+        shell: pwsh
 
-    - name: Create bin archive for Gcodes.Console
-      run: |
-        if (Test-Path "Gcodes.Console\bin") {
-          Compress-Archive -Path "Gcodes.Console\bin\*" -DestinationPath "gcodes-console-bin.zip"
-        }
-      shell: pwsh
+      - name: Create bin archive for Gcodes.Console
+        run: |
+          if (Test-Path "Gcodes.Console\bin") {
+            Compress-Archive -Path "Gcodes.Console\bin\*" `
+              -DestinationPath "gcodes-console-bin.zip"
+          }
+        shell: pwsh
 
-    - name: Create bin archive for Gcodes.Test
-      run: |
-        if (Test-Path "Gcodes.Test\bin") {
-          Compress-Archive -Path "Gcodes.Test\bin\*" -DestinationPath "gcodes-test-bin.zip"
-        }
-      shell: pwsh
+      - name: Create bin archive for Gcodes.Test
+        run: |
+          if (Test-Path "Gcodes.Test\bin") {
+            Compress-Archive -Path "Gcodes.Test\bin\*" `
+              -DestinationPath "gcodes-test-bin.zip"
+          }
+        shell: pwsh
 
-    - name: Upload Gcodes library artifacts
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: gcodes-lib-bin
-        path: gcodes-lib-bin.zip
-        if-no-files-found: warn
+      - name: Upload Gcodes library artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gcodes-lib-bin
+          path: gcodes-lib-bin.zip
+          if-no-files-found: warn
 
-    - name: Upload Gcodes.Console artifacts
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: gcodes-console-bin
-        path: gcodes-console-bin.zip
-        if-no-files-found: warn
+      - name: Upload Gcodes.Console artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gcodes-console-bin
+          path: gcodes-console-bin.zip
+          if-no-files-found: warn
 
-    - name: Upload Gcodes.Test artifacts
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: gcodes-test-bin
-        path: gcodes-test-bin.zip
-        if-no-files-found: warn
+      - name: Upload Gcodes.Test artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gcodes-test-bin
+          path: gcodes-test-bin.zip
+          if-no-files-found: warn
