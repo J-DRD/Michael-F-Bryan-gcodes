@@ -30,26 +30,32 @@ namespace Gcodes
         /// source text.
         /// </summary>
         /// <param name="src"></param>
-        public Lexer(string src) : this(src, null) { }
+        public Lexer(string src) : this(src, null, null) { }
 
         /// <summary>
         /// Create a new <see cref="Lexer"/> with custom token patterns.
         /// </summary>
         /// <param name="src">Source text to tokenize</param>
         /// <param name="customPatterns">Custom patterns to use, or null for default patterns</param>
-        public Lexer(string src, IEnumerable<Pattern> customPatterns)
+        /// <param name="customSkips">Custom skip regexes to use, or null for default skips</param>
+        public Lexer(string src, IEnumerable<Pattern> customPatterns, IEnumerable<Regex> customSkips = null)
         {
-            skips = new List<Regex>
-            {
-                new Regex(@"\G\s+", RegexOptions.Compiled),
-                new Regex(@"\G;([^\n\r]*)", RegexOptions.Compiled),
-                new Regex(@"\G\(([^)\n\r]*)\)", RegexOptions.Compiled),
-            };
+            skips = customSkips?.ToList() ?? GetDefaultSkips();
             this.src = src;
             pointer = 0;
             lineNumber = 0;
 
             patterns = customPatterns?.ToList() ?? GetDefaultPatterns();
+        }
+
+        private static List<Regex> GetDefaultSkips()
+        {
+            return new List<Regex>
+            {
+                new Regex(@"\G\s+", RegexOptions.Compiled),
+                new Regex(@"\G;([^\n\r]*)", RegexOptions.Compiled),
+                new Regex(@"\G\(([^)\n\r]*)\)", RegexOptions.Compiled),
+            };
         }
 
         private static List<Pattern> GetDefaultPatterns()
