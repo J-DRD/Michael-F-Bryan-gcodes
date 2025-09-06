@@ -1,6 +1,7 @@
 ﻿using Gcodes.Tokens;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -37,16 +38,8 @@ namespace Gcodes.Ast
         /// <returns></returns>
         public double? ValueFor(ArgumentKind kind)
         {
-            var found = args.Where(arg => arg.Kind == kind);
-
-            if (found.Any())
-            {
-                return found.First().Value;
-            }
-            else
-            {
-                return null;
-            }
+            var arg = args.FirstOrDefault(a => a.Kind == kind);
+            return arg?.Value;
         }
 
         public double? ValueFor(params ArgumentKind[] kinds)
@@ -66,7 +59,7 @@ namespace Gcodes.Ast
 
             foreach (var arg in Arguments)
             {
-                sb.AppendFormat(" {0}{1}", arg.Kind, arg.Value);
+                sb.AppendFormat(CultureInfo.InvariantCulture, " {0}{1}", arg.Kind, arg.Value);
             }
 
             return sb.ToString();
@@ -88,11 +81,17 @@ namespace Gcodes.Ast
 
         public override int GetHashCode()
         {
-            var hashCode = 1590044514;
-            hashCode = hashCode * -1521134295 + base.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<List<Argument>>.Default.GetHashCode(args);
-            hashCode = hashCode * -1521134295 + Number.GetHashCode();
-            return hashCode;
+            unchecked
+            {
+                var hashCode = 1590044514;
+                hashCode = hashCode * -1521134295 + base.GetHashCode();
+                foreach (var arg in args)
+                {
+                    hashCode = hashCode * -1521134295 + arg.GetHashCode();
+                }
+                hashCode = hashCode * -1521134295 + Number.GetHashCode();
+                return hashCode;
+            }
         }
 
         public static bool operator ==(Gcode gcode1, Gcode gcode2)

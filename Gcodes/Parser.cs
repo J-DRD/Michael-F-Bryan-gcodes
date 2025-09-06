@@ -208,7 +208,9 @@ namespace Gcodes
                 return null;
             }
 
-            if (numberTok.Value.Contains('.') || numberTok.Value.Contains('-'))
+            if (numberTok.Value.Contains('.') ||
+                numberTok.Value.Contains('-') ||
+                numberTok.Value.Contains('+'))
             {
                 throw new ParseException("The number for a \"G\" code should be a positive integer", numberTok.Span);
             }
